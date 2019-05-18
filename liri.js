@@ -46,3 +46,20 @@ function spotifyCall(songName) {
         console.log("\n Track Info " + "\nArtist: " + data.tracks.items[0].artists[0].name + "\n Song: " + data.tracks.items[0].name + "\n Link: " + data.tracks.items[0].external_urls.spotify + "\n Album: " + data.tracks.items[0].album.name + "\n" + "\n This song is great, But how about another!")
     })
 }
+// Movie-this request with axios with the omdb api
+function movieThis(movieName) {
+    if (!movieName) {
+        movieName = "Mr.Nobdy";
+    }
+    var queryUrl = "https://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    // axios request with axios to help debug the actual URL
+    axios.get(queryUrl)
+         .then(function(response) {
+             if (!movieName) {
+                 movieName = "Mr. Nobody";
+                 console.log(response.data)
+             }
+         })
+
+    
+}
