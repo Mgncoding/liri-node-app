@@ -1,20 +1,48 @@
-require("dotenv").config()
+ require("dotenv").config();
+//  Packages and Api
+const axios = require("axios");
+const Spotify = require('node-spotify-api');
+const keys = require("./keys.js");
+const moment = require("moment");
 
-// Making requires
-const keys = require("./keys.js")
+// to append txt files
+const fs = require("fs");
+var query = process.argv[3];
 
-const request = require("request")
+// Check Keys
+// console.log(keys)
+var option = process.argv[2];
+//  Spotify client
+const spotify = new Spotify(keys.spotify);
 
-const fs = require("fs")
-
-const moment = require("moment")
-
-const omdb = (keys.omdb)
-const bandsintown = (keys.bandsintown)
-
-const Spotify = require('node-spotify-api')
-const spotify = new Spotify(keys.spotify)
-
-// Arguments 
-
-
+switch (option) {
+    case "movie-this":
+       movieThis(query);
+       break;
+    case "spotify-this-song":
+       spotifyCall(query);
+       break;
+    case "concert-this":
+       concertThis(query);
+       break;
+    default:
+        // read file
+        fs.readFile("random.txt", "UTF8", function(error, data){
+            var data = data.split(",");
+            var wantIt = data[1];
+            if (error) {
+                return console.log(error)
+            }
+            // Now we call the function
+            spotifyCall(wantIt);
+        }) 
+}
+// Function and Spotify-This-Song
+function spotifyCall(songName) {
+    spotify.search({type: 'track',query:songName}, function(err, data) {
+        if (err) {
+            return console.log('Error occurred' + err);
+        }
+        console.log("\n Track Info " + "\nArtist: " + data.tracks.items[0].artists[0].name + "\n Song: " + data.tracks.items[0].name + "\n Link: " + data.tracks.items[0].external_urls.spotify + "\n Album: " + data.tracks.items[0].album.name + "\n" + "\n This song is great, But how about another!")
+    })
+}
