@@ -57,9 +57,20 @@ function movieThis(movieName) {
          .then(function(response) {
              if (!movieName) {
                  movieName = "Mr. Nobody";
-                 console.log(response.data)
-             }
-         })
+                //  console.log(response.data)
+                console.log("\n Movie Info " + response.data.Title + "\nRelease Year: " + response.data.Year + "\n Rating: " + response.data.Rated + "\n Release Country: " + response.data.Country + "\n Language: " + response.data.Language + "\n Plot: " + response.data.Country + "\n Actors: " + response.data.Actors + "\n" + "\n Really? This one?!?")
+             };
+         });
 
-    
+};
+// Concert-this request axios for bandsintown api
+function concertThis(artist) {
+    var bandsQueryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+    // Url to try and debug against the actual URL
+    axios.get(bandsQueryUrl)
+         .then(function(response) {
+             console.log(`Upcoming Events: `)
+             console.log(`Artist: ${artist} + "\n Venue:  + ${response.data[0].venue.name} + "\n Location: + ${response.data[0].venue.country} + "\n Date: + ${response.data[0].datatime} + "\n Party on Garth`);
+             
+         })
 }
