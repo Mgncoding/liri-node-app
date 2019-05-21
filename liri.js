@@ -1,4 +1,4 @@
- require("dotenv").config();
+require("dotenv").config();
 //  Packages and Api
 const axios = require("axios");
 const Spotify = require('node-spotify-api');
@@ -7,39 +7,30 @@ const moment = require("moment");
 
 // to append txt files
 const fs = require("fs");
-var query = process.argv[3];
+var query = process.argv.slice[3].join;
+var option = process.argv[2];
 
 // Check Keys
 // console.log(keys)
-var option = process.argv[2];
+// Do-what it says
+if (option == 'do-what-it-says') {
+	fs.readFile('random.txt', 'utf8', function (err, data) {
+		if (err) {
+			console.log(`error: ${err}`)
+		} else {
+			let cut = data.split(",")
+			option = cut[0]
+			query = cut[1]
+
+			search(option)
+		}
+	})
+}
 //  Spotify client
 const spotify = new Spotify(keys.spotify);
-
-switch (option) {
-    case "movie-this":
-       movieThis(query);
-       break;
-    case "spotify-this-song":
-       spotifyCall(query);
-       break;
-    case "concert-this":
-       concertThis(query);
-       break;
-    default:
-        // read file
-        fs.readFile("random.txt", "UTF8", function(error, data){
-            var data = data.split(",");
-            var wantIt = data[1];
-            if (error) {
-                return console.log(error)
-            }
-            // Now we call the function
-            spotifyCall(wantIt);
-        }) 
-}
 // Function and Spotify-This-Song
 function spotifyCall(songName) {
-    spotify.search({type: 'track',query:songName}, function(err, data) {
+    spotify.search({ type: 'track', query: songName }, function (err, data) {
         if (err) {
             return console.log('Error occurred' + err);
         }
@@ -54,13 +45,13 @@ function movieThis(movieName) {
     var queryUrl = "https://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
     // axios request with axios to help debug the actual URL
     axios.get(queryUrl)
-         .then(function(response) {
-             if (!movieName) {
-                 movieName = "Mr. Nobody";
+        .then(function (response) {
+            if (!movieName) {
+                movieName = "Mr. Nobody";
                 //  console.log(response.data)
                 console.log("\n Movie Info " + response.data.Title + "\nRelease Year: " + response.data.Year + "\n Rating: " + response.data.Rated + "\n Release Country: " + response.data.Country + "\n Language: " + response.data.Language + "\n Plot: " + response.data.Country + "\n Actors: " + response.data.Actors + "\n" + "\n Really? This one?!?")
-             };
-         });
+            };
+        });
 
 };
 // Concert-this request axios for bandsintown api
@@ -68,9 +59,31 @@ function concertThis(artist) {
     var bandsQueryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
     // Url to try and debug against the actual URL
     axios.get(bandsQueryUrl)
-         .then(function(response) {
-             console.log(`Upcoming Events: `)
-             console.log(`Artist: ${artist} + "\n Venue:  + ${response.data[0].venue.name} + "\n Location: + ${response.data[0].venue.country} + "\n Date: + ${response.data[0].datatime} + "\n Party on Garth`);
-             
-         })
+        .then(function (response) {
+            console.log(`Upcoming Events: `)
+            console.log(`Artist: ${artist}  "\n Venue:   ${response.data[0].venue.name}  "\n Location:  ${response.data[0].venue.country}  "\n Date:  ${moment(response.data[0].datetime).format("MM-DD-YYYY")}  "\n Party on Garth`)
+        })
+}
+
+switch (option) {
+    case "movie-this":
+        movieThis(query);
+        break;
+    case "spotify-this-song":
+        spotifyCall(query);
+        break;
+    case "concert-this":
+        concertThis(query);
+        break;
+    default:
+        // read file
+        fs.readFile("random.txt", "UTF8", function (error, data) {
+            var data = data.split(",");
+            var wantIt = data[1];
+            if (error) {
+                return console.log(error)
+            }
+            // Now we call the function
+            spotifyCall(wantIt);
+        })
 }
